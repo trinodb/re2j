@@ -7,10 +7,6 @@
 
 package com.google.re2j;
 
-import sun.misc.Unsafe;
-
-import java.lang.reflect.Field;
-
 import io.airlift.slice.Slice;
 
 /**
@@ -18,23 +14,6 @@ import io.airlift.slice.Slice;
  * lookahead.
  */
 final class MachineInput {
-
-  private static final Unsafe unsafe;
-
-  static {
-    try {
-      // fetch theUnsafe object
-      Field field = Unsafe.class.getDeclaredField("theUnsafe");
-      field.setAccessible(true);
-      unsafe = (Unsafe) field.get(null);
-      if (unsafe == null) {
-        throw new RuntimeException("Unsafe access not available");
-      }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   static final byte EOF = -1;
 
   static MachineInput fromUTF8(Slice slice) {
@@ -42,14 +21,14 @@ final class MachineInput {
   }
 
   final Slice slice;
-  final Object base;
-  final long address;
+  final byte[] base;
+  final int offset;
   final int length;
 
   MachineInput(Slice slice) {
     this.slice = slice;
-    this.base = slice.getBase();
-    this.address = slice.getAddress();
+    this.base = slice.byteArray();
+    this.offset = slice.byteArrayOffset();
     this.length = slice.length();
   }
 
@@ -67,7 +46,7 @@ final class MachineInput {
   }
 
   byte getByteUnchecked(int i) {
-    return unsafe.getByte(base, address + i);
+    return base[offset + i];
   }
 
   // Returns the index relative to |pos| at which |re2.prefix| is found
