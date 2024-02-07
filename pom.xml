@@ -11,7 +11,7 @@
 
     <groupId>io.trino</groupId>
     <artifactId>trino-re2j</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7</version>
     <url>http://github.com/trinodb/re2j</url>
 
     <packaging>jar</packaging>
@@ -63,4 +63,8 @@
             </testResource>
         </testResources>
     </build>
+
+  <scm>
+    <tag>1.7</tag>
+  </scm>
 </project>
